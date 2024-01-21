@@ -1,58 +1,121 @@
-alert("¡Bienvenida y bievenido a nuestro sitio web!");//Función para mensajes
+//let titulo=document.querySelector('h1');
+/*
+* Document es un puente, entre html y jAVAsCRIPT
+* query selector, selecciona una etiqueta de elemento
+*/
 
-//let numSecreto=45;
-alert("A continuación me darás un número límite para poner un número secreto: ");
-let numLimite=prompt("Ingresa el numero por favor: ");
-
-let numSecreto=Math.floor(Math.random()*numLimite)+1;//Para obtener randoms en entero
-console.log(typeof(numSecreto));
-//console.log(numeroUsuario);//Para mostrar en al consola de F12
-let numUsuario;
-let flag=false;
-let cont=0;
-let intentos=5;
-while (cont!=5) {
-
-    numUsuario=prompt(`Indicame un número entre 1 y ${numLimite}: `);
-    cont++;
-    if (numSecreto==numUsuario) {
-        console.log(`Felicidades, lo adivinaste, el número secreto es: ${numSecreto} y tuviste: ${cont} ${cont==1 ? "intento" : "intentos"}`);//CON USO DE PLANTILLA
-        break;
-    }
-    else if (numUsuario>numSecreto)
-    {
-        console.log("Lo siento, pero no lo lograste, el numsero secreto es MENOR");
-    }
-    else if (numUsuario<numSecreto)
-    {
-        console.log("Lo siento, pero no lo lograste, el numsero secreto es MAYOR");
-    }
-}
-
-console.log("Se te acabron tus intentos y/o el juego");//CON USO DE PLANTILLA
+//titulo.innerHTML='Juego del número secreto';
 
 
+// let parrafo=document.querySelector('p');
 
-let diaSemana=prompt("Ingrese un día de la semana: ");
-if (diaSemana=="Sábado"||diaSemana=="Domingo") 
+// parrafo.innerHTML="Indica un número del 1 al limiteAleatorio: ";
+
+let numSecreto;
+let intentos;
+let limiteAleatorio=Number(prompt("Ingrese el número Maximo aleatorio: "));
+console.log(typeof(limiteAleatorio));
+
+let listaNumerosGenerados=[];
+
+function asignarTextoElemento(elemento,texto)
 {
-    console.log("Buen finde semana");
-}
-else
-{
-    console.log("Buena semana!");
+    let objetoHtml=document.querySelector(elemento);
+    objetoHtml.innerHTML=texto;
+    return;
 }
 
-if (numUsuario>=0) {
-    console.log(`El numero de usuario: ${numUsuario} es positivo`);
-}
-else
+function limpiarCaja()
 {
-    console.log(`El numero de usuario: ${numUsuario} es NEGATIVO`);
+    //Otra form a de seleccionar el id:
+    document.querySelector('#valorUsuario').value='';
+    return;
 }
 
-console.log("Ahora veremos disminuir el numero secreto:");
-while (numSecreto!=0) {
-    console.log(`${numSecreto}`);
-    numSecreto--;
+function verificarIntento()
+{
+    /*
+    * Get element by id:
+    */
+    let numUsuario=parseInt(document.getElementById('valorUsuario').value);
+    
+    // console.log(numSecreto);
+    // console.log(typeof(numSecreto));
+    // console.log(numUsuario);
+    // console.log(typeof(numUsuario));
+
+    // === nos indica que la comparación SI O SI se debe hacer entre 2 elementos del mismo TIPO
+    console.log(numSecreto===numUsuario);
+    if (numSecreto===numUsuario) {
+        asignarTextoElemento('p',`Usted acertó el número 🥳 con ${intentos} ${(intentos===1) ? "intento": "intentos"}`);
+        document.getElementById('reiniciar').removeAttribute('disabled');
+    }
+    else {
+        if (numSecreto>numUsuario) {
+            asignarTextoElemento('p',"El número secreto es mayor a su número 🙄");
+        }
+        else if (numSecreto<numUsuario) {
+            asignarTextoElemento('p',"El número secreto es menor a su número 🙄");
+        }
+        intentos++;
+        limpiarCaja();
+    }
+    return;
 }
+
+function generarNumeroSecreto()
+{
+    let numGenerado=Math.floor(Math.random()*limiteAleatorio)+1;//del 1 al limiteAleatorio
+    console.log(listaNumerosGenerados);
+    if (listaNumerosGenerados.length==limiteAleatorio) {
+        console.log("Array is full!");
+        asignarTextoElemento('p',"Ya se usaron todos los numeros aleatorios posibles 😪");
+    }
+    else{
+        if (listaNumerosGenerados.includes(numGenerado)) 
+        {
+            return generarNumeroSecreto();
+        }
+        else
+        {
+            listaNumerosGenerados.push(numGenerado);
+            console.log("returned");
+            return numGenerado;
+        }
+    }
+    
+}
+
+
+/*
+EXTRA: 
+* Função anônima	let saludo = function() { ... };
+* Arrow function	let cuadrado = x => x * x;
+
+*/
+
+function condicionesIniciales()
+{
+    /**
+     * Limpiar caja
+     * Indicar el mensaje del intervalo
+     * Generar el numero aleatorio
+     * los intentos desde 0
+     * y desactivar el boton de NuevoJuego
+    */
+    limpiarCaja();
+    asignarTextoElemento('h1',"¡Juego del Numero Secreto!");
+    asignarTextoElemento('p',`Indica un numero del 1 - ${limiteAleatorio}: `);
+    numSecreto=generarNumeroSecreto();
+    intentos=1;
+    console.log(numSecreto);
+    document.getElementById('reiniciar').setAttribute('disabled',true);
+}
+
+function reiniciarJuego()
+{    
+    condicionesIniciales();
+}
+
+
+condicionesIniciales();
