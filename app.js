@@ -13,8 +13,7 @@
 
 let numSecreto;
 let intentos;
-let limiteAleatorio=Number(prompt("Ingrese el número Maximo aleatorio: "));
-console.log(typeof(limiteAleatorio));
+let limiteAleatorio=10;
 
 let listaNumerosGenerados=[];
 
